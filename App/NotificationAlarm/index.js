@@ -11,7 +11,8 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import PushNotification from "react-native-push-notification";
 import { sortByKey } from "../Utils";
 import { ListItem } from "./Components";
-
+import AlarmModel from "../AlarmModel";
+import AlarmDatabase from "../AlarmDatabase";
 export default class App extends Component {
   state = {
     data: [],
@@ -44,18 +45,14 @@ export default class App extends Component {
   };
   addAlarmItem = date => {
     let currentEpochTime = date.getTime();
-    let currentTime = date.toLocaleString("en-US", {
-      hour: "numeric",
-      minute: "numeric",
-      hour12: true
-    });
     let hours = date.getHours(),
       minutes = date.getMinutes();
     let isPM = hours >= 12;
     let isMidday = hours == 12;
-    let time =
-      [hours - (isPM && !isMidday ? 12 : 0), minutes].join(":") +
-      (isPM ? " PM" : "AM");
+    minutes = minutes >= 10 ? minutes : "0" + minutes;
+    hours = hours - (isPM && !isMidday ? 12 : 0);
+    hours = hours >= 10 ? hours : "0" + hours;
+    let time = [hours, minutes].join(":") + (isPM ? " PM" : " AM");
     PushNotification.localNotificationSchedule({
       //title: "My Notification Title",
       message: "Alarm @ " + time,
@@ -65,6 +62,10 @@ export default class App extends Component {
       //alertAction: "Cancel",
       number: 0
     });
+    let alarm = new AlarmModel("Alarm", date, time, "MON");
+    console.log(alarm);
+    //AlarmDatabase.save(alarm);
+    //  console.log(AlarmDatabase.findAll(true));
     this.setState(
       prevState => {
         let { data } = prevState;

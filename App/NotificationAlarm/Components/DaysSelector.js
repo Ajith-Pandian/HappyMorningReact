@@ -10,13 +10,13 @@ export default class DaysSelector extends Component {
   }
   render() {
     const days = [
-      { id: 1, name: "MON" },
-      { id: 2, name: "TUE" },
-      { id: 3, name: "WED" },
-      { id: 4, name: "THU" },
-      { id: 5, name: "FRI" },
-      { id: 6, name: "SAT" },
-      { id: 7, name: "SUN" }
+      { id: 1, name: "S" },
+      { id: 2, name: "M" },
+      { id: 3, name: "T" },
+      { id: 4, name: "W" },
+      { id: 5, name: "T" },
+      { id: 6, name: "F" },
+      { id: 7, name: "S" }
     ];
     let { onDaysChange, selectedDays } = this.props;
     let daysList = days.map((days, index) =>
@@ -26,16 +26,15 @@ export default class DaysSelector extends Component {
           isSelected={
             selectedDays &&
             selectedDays.length > 0 &&
-            selectedDays.indexOf(days.name) >= 0
+            selectedDays.indexOf(days.id) >= 0
           }
           onValueChange={value => {
-            console.log(`Date ${days.name} selected ${value}`);
+            console.log(`Date ${days.id} selected ${value}`);
             if (value) {
               this.setState(
                 prevState => {
                   let newArray = prevState.selectedDays.slice();
                   newArray.push(days.name);
-
                   return {
                     selectedDays: newArray
                   };
