@@ -22,9 +22,8 @@ const alarmRealm = new Realm({
 });
 
 export default class AlarmService {
-  static findAll(sortBy) {
-    if (!sortBy) sortBy = [["completed", false], ["updatedAt", true]];
-    return alarmRealm.objects(ALARM).sorted(sortBy);
+  static findAll() {
+    return alarmRealm.objects(ALARM);
   }
 
   static save(alarm) {

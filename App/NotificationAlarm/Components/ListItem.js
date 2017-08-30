@@ -8,18 +8,12 @@ export default class ListItem extends Component {
     this.state = {
       switchValue: props.isOn,
       isExpanded: false,
-      selectedDays: []
     };
   }
   render() {
     let { time, index } = this.props;
     let { isExpanded, selectedDays } = this.state;
     let isEvenItem = index % 2 === 0;
-    console.log(selectedDays);
-    let daysLength = selectedDays ? selectedDays.length : 0;
-    let containDays = selectedDays && daysLength > 0;
-    let hasSomeDays = containDays && daysLength < 7;
-    let hasAllDays = containDays && daysLength === 7;
     return (
       <TouchableOpacity
         activeOpacity={0.8}
@@ -49,24 +43,12 @@ export default class ListItem extends Component {
             value={this.state.switchValue}
           />
         </View>
-        {isExpanded
-          ? <View>
-              <DaysSelector
-                selectedDays={selectedDays}
-                onDaysChange={selectedDays => this.setState({ selectedDays })}
-              />
-            </View>
-          : hasSomeDays
-            ? <View style={{ flexDirection: "row" }}>
-                {selectedDays.map((day, index) =>
-                  <Text style={{ margin: 2 }} key={index}>
-                    {day}
-                  </Text>
-                )}
-              </View>
-            : <Text style={{ margin: 2 }}>
-                {hasAllDays ? "EveryDay" : "Today"}
-              </Text>}
+
+        <View>
+          <DaysSelector
+            isExpanded={isExpanded}
+          />
+        </View>
       </TouchableOpacity>
     );
   }
