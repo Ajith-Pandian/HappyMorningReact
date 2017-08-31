@@ -9,17 +9,21 @@ import {
 import Icon from "react-native-vector-icons/MaterialIcons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import PushNotification from "react-native-push-notification";
-import { sortByKey } from "../Utils";
+import { connect } from "react-redux";
+import { addAlarm } from "../Actions/AlarmActions";
+import { getTimeString } from "../Utils";
 import { ListItem } from "./Components";
 import AlarmModel from "../AlarmModel";
 import AlarmDatabase from "../AlarmDatabase";
-export default class App extends Component {
+
+class App extends Component {
   state = {
     data: [],
     isDateTimePickerVisible: false
   };
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
+    console.log(props);
     PushNotification.configure({
       onRegister: function(token) {
         console.log("TOKEN:", token);
@@ -44,54 +48,32 @@ export default class App extends Component {
     this._hideDateTimePicker();
   };
   addAlarmItem = date => {
-    let currentEpochTime = date.getTime();
-    let hours = date.getHours(),
-      minutes = date.getMinutes();
-    let isPM = hours >= 12;
-    let isMidday = hours == 12;
-    minutes = minutes >= 10 ? minutes : "0" + minutes;
-    hours = hours - (isPM && !isMidday ? 12 : 0);
-    hours = hours >= 10 ? hours : "0" + hours;
-    let time = [hours, minutes].join(":") + (isPM ? " PM" : " AM");
-    PushNotification.localNotificationSchedule({
-      //title: "My Notification Title",
-      message: "Alarm @ " + time,
-      //  playSound: false,
-      //soundName: "default",
-      date,
-      //alertAction: "Cancel",
-      number: 0
-    });
-    let alarm = new AlarmModel("Alarm", date, time, "MON");
-    console.log(alarm);
+    // PushNotification.localNotificationSchedule({
+    //   //title: "My Notification Title",
+    //   message: "Alarm @ " + time,
+    //   //  playSound: false,
+    //   //soundName: "default",
+    //   date,
+    //   //alertAction: "Cancel",
+    //   number: 0
+    // });
+    console.log(date);
+    this.props.createAlarm(date);
     //AlarmDatabase.save(alarm);
     //  console.log(AlarmDatabase.findAll(true));
-    this.setState(
-      prevState => {
-        let { data } = prevState;
-        return {
-          data: data.concat({
-            key: data.key ? data.key + 1 : 0,
-            time
-          })
-        };
-      },
-      state => console.log(this.state)
-    );
   };
 
   render() {
-    let { data } = this.state;
-    //index % 2 === 0
+    let { alarms } = this.props;
     let { container, iconCircle, iconButton } = styles;
     return (
       <View style={container}>
-        {data && data.length > 0
+        {alarms && alarms.length > 0
           ? <FlatList
-              data={data}
-              renderItem={({ item, index }) => {
-                return <ListItem time={item.time} isOn={false} index={index} />;
-              }}
+              data={alarms}
+              renderItem={({ item, index }) =>
+                <ListItem alarm={item} index={index} />}
+              keyExtractor={(item, index) => index}
             />
           : <Text>No Alarms</Text>}
         <TouchableOpacity
@@ -154,3 +136,15 @@ App.navigationOptions = {
     backgroundColor: "#175e65"
   }
 };
+
+const mapStateToProps = state => ({
+  alarms: state.AlarmsReducer.alarms
+});
+
+const mapDispatchToProps = (dispatch, props) => ({
+  createAlarm: date => {
+    dispatch(addAlarm(date));
+  }
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

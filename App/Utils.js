@@ -13,3 +13,15 @@ export function getRandomId() {
     return id;
   });
 }
+
+export function getTimeString(date) {
+  let hours = date.getHours(),
+    minutes = date.getMinutes();
+  let isPM = hours >= 12;
+  let isMidday = hours == 12;
+  minutes = minutes >= 10 ? minutes : "0" + minutes;
+  hours = hours - (isPM && !isMidday ? 12 : 0);
+  hours = hours >= 10 ? hours : "0" + hours;
+  let time = [hours, minutes].join(":") + (isPM ? " PM" : " AM");
+  return time;
+}

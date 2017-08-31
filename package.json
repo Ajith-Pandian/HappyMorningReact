@@ -7,6 +7,7 @@
     "test": "jest"
   },
   "dependencies": {
+    "immutability-helper": "^2.3.1",
     "react": "16.0.0-alpha.12",
     "react-native": "0.47.1",
     "react-native-fetch-blob": "^0.10.8",
@@ -16,7 +17,12 @@
     "react-native-share": "^1.0.20",
     "react-native-vector-icons": "^4.3.0",
     "react-navigation": "^1.0.0-beta.11",
-    "realm": "^1.10.3"
+    "react-redux": "^5.0.6",
+    "realm": "^1.10.3",
+    "redux": "^3.7.2",
+    "redux-actions": "^2.2.1",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
     "babel-jest": "20.0.3",

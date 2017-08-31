@@ -3,22 +3,13 @@ import { TouchableOpacity, View, Text } from "react-native";
 import Actions from "./Actions";
 import Days from "./Days";
 
-const days = [
-  { id: 1, name: "S", selected: true },
-  { id: 2, name: "M", selected: true },
-  { id: 3, name: "T", selected: true },
-  { id: 4, name: "W", selected: true },
-  { id: 5, name: "T", selected: true },
-  { id: 6, name: "F", selected: true },
-  { id: 7, name: "S", selected: true }
-];
 export default class DaysSelector extends Component {
   constructor(props) {
     super(props);
-    this.state = { selectedDays: days };
+    this.state = { selectedDays: props.days };
   }
   render() {
-    let { isExpanded } = this.props;
+    let { isExpanded, onDelete } = this.props;
     let { selectedDays } = this.state;
     let daysList = selectedDays.map((day, index) => {
       return (
@@ -56,7 +47,7 @@ export default class DaysSelector extends Component {
           : <View style={{ flexDirection: "row" }}>
               {daysList}
             </View>}
-        {isExpanded ? <Actions /> : false}
+        {isExpanded ? <Actions onDelete={() => onDelete()} /> : false}
       </View>
     );
   }

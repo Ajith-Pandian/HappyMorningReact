@@ -1,17 +1,21 @@
 import React, { Component } from "react";
 import { TouchableOpacity, Text, Switch, View, Dimensions } from "react-native";
 import DaysSelector from "./DaysSelector";
+import { modifyAlarm, deleteAlarm } from "../../Actions/AlarmActions";
+import { connect } from "react-redux";
 
-export default class ListItem extends Component {
+class ListItem extends Component {
   constructor(props) {
     super(props);
+    console.log(props);
     this.state = {
-      switchValue: props.isOn,
-      isExpanded: false,
+      switchValue: props.alarm.isActive,
+      isExpanded: false
     };
   }
   render() {
-    let { time, index } = this.props;
+    let { alarm, index, dispatch } = this.props;
+    let { time, days } = alarm;
     let { isExpanded, selectedDays } = this.state;
     let isEvenItem = index % 2 === 0;
     return (
@@ -38,7 +42,10 @@ export default class ListItem extends Component {
             {time}
           </Text>
           <Switch
-            onValueChange={value => this.setState({ switchValue: value })}
+            onValueChange={value =>
+              this.setState({ switchValue: value }, () =>
+                dispatch(modifyAlarm(alarm.id))
+              )}
             onTintColor="#49b1b2"
             value={this.state.switchValue}
           />
@@ -46,10 +53,14 @@ export default class ListItem extends Component {
 
         <View>
           <DaysSelector
+            days={days}
             isExpanded={isExpanded}
+            onDelete={() => dispatch(deleteAlarm(alarm.id))}
           />
         </View>
       </TouchableOpacity>
     );
   }
 }
+
+export default connect()(ListItem);

@@ -5,6 +5,8 @@ import Test from "./Test";
 import NotificationAlarm from "./NotificationAlarm";
 import { StackNavigator } from "react-navigation";
 import { View, StatusBar } from "react-native";
+import { Provider } from "react-redux";
+import configureStore from "./store";
 
 const AppContent = StackNavigator({
   Home: { screen: NotificationAlarm }
@@ -14,4 +16,8 @@ const App = () =>
     <StatusBar backgroundColor="#175e65" barStyle="light-content" />
     <AppContent />
   </View>;
-export default App;
+const ReduxApp = () =>
+  <Provider store={configureStore()}>
+    <App />
+  </Provider>;
+export default ReduxApp;
