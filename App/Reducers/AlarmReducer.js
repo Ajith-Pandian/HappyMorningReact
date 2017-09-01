@@ -37,6 +37,15 @@ export default function AlarmReducer(state = initialState, action) {
       let index = state.alarms.indexOf(alarm);
       return updateAlarmState(state, index, "repeat", value);
     }
+    case MODIFY_ALARM_DAYS: {
+      let { alarm, dayIndex, value } = action;
+      let index = state.alarms.indexOf(alarm);
+      return update(state, {
+        alarms: {
+          [index]: { days: { [dayIndex]: { selected: { $set: value } } } }
+        }
+      });
+    }
     case DELETE_ALARM:
       return {
         ...state,

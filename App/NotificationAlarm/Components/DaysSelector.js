@@ -6,7 +6,6 @@ import Days from "./Days";
 export default class DaysSelector extends Component {
   constructor(props) {
     super(props);
-    this.state = { selectedDays: props.days };
   }
   render() {
     let {
@@ -15,29 +14,24 @@ export default class DaysSelector extends Component {
       onRepeatChange,
       onVibrateChange,
       isVibrate,
-      isRepeat
+      isRepeat,
+      onDaysChange,
+      days
     } = this.props;
-    let { selectedDays } = this.state;
-    let daysList = selectedDays.map((day, index) => {
+    let daysList = days.map((day, index) => {
       return (
         <TouchableOpacity key={index}>
           <Days
             value={day.name}
             isSelected={day.selected}
             onValueChange={value => {
-              this.setState(prevState => {
-                let selectedDays = prevState.selectedDays;
-                selectedDays[index].selected = value;
-                return {
-                  selectedDays
-                };
-              });
+              onDaysChange(index, value);
             }}
           />
         </TouchableOpacity>
       );
     });
-    let visibleDays = selectedDays.filter(days => days.selected == true);
+    let visibleDays = days.filter(day => day.selected == true);
     let hasAllDays = visibleDays && visibleDays.length === 7;
     return (
       <View style={{ margin: 8 }}>

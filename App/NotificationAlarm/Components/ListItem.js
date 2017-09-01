@@ -6,7 +6,8 @@ import {
   deleteAlarm,
   modifyAlarmActive,
   modifyAlarmRepeat,
-  modifyAlarmVibrate
+  modifyAlarmVibrate,
+  modifyAlarmDays
 } from "../../Actions/AlarmActions";
 import { connect } from "react-redux";
 
@@ -61,6 +62,8 @@ class ListItem extends Component {
             isExpanded={isExpanded}
             isVibrate={vibrate}
             isRepeat={repeat}
+            onDaysChange={(daysIndex, value) =>
+              dispatch(modifyAlarmDays(alarm, daysIndex, value))}
             onDelete={() => dispatch(deleteAlarm(alarm.id))}
             onRepeatChange={value => dispatch(modifyAlarmRepeat(alarm, value))}
             onVibrateChange={value =>

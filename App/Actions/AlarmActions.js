@@ -35,9 +35,9 @@ export function modifyAlarmVibrate(alarm, value) {
   };
 }
 
-export function modifyAlarmDays(alarm, value) {
+export function modifyAlarmDays(alarm, dayIndex, value) {
   return (dispatch, getState) => {
-    dispatch(_modifyAlarmDays(alarm, value));
+    dispatch(_modifyAlarmDays(alarm, dayIndex, value));
   };
 }
 
@@ -82,10 +82,11 @@ export function _modifyAlarmRepeat(alarm, value) {
   };
 }
 
-export function _modifyAlarmDays(alarm, value) {
+export function _modifyAlarmDays(alarm, dayIndex, value) {
   return {
     type: MODIFY_ALARM_DAYS,
     alarm,
+    dayIndex,
     value
   };
 }
