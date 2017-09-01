@@ -1,22 +1,26 @@
 import React, { Component } from "react";
 import { TouchableOpacity, Text, Switch, View, Dimensions } from "react-native";
 import DaysSelector from "./DaysSelector";
-import { modifyAlarm, deleteAlarm } from "../../Actions/AlarmActions";
+import {
+  modifyAlarm,
+  deleteAlarm,
+  modifyAlarmActive,
+  modifyAlarmRepeat,
+  modifyAlarmVibrate
+} from "../../Actions/AlarmActions";
 import { connect } from "react-redux";
 
 class ListItem extends Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
-      switchValue: props.alarm.isActive,
       isExpanded: false
     };
   }
   render() {
     let { alarm, index, dispatch } = this.props;
-    let { time, days } = alarm;
-    let { isExpanded, selectedDays } = this.state;
+    let { time, days, vibrate, repeat, isActive } = alarm;
+    let { isExpanded } = this.state;
     let isEvenItem = index % 2 === 0;
     return (
       <TouchableOpacity
@@ -44,10 +48,10 @@ class ListItem extends Component {
           <Switch
             onValueChange={value =>
               this.setState({ switchValue: value }, () =>
-                dispatch(modifyAlarm(alarm.id))
+                dispatch(modifyAlarmActive(alarm, value))
               )}
             onTintColor="#49b1b2"
-            value={this.state.switchValue}
+            value={isActive}
           />
         </View>
 
@@ -55,7 +59,12 @@ class ListItem extends Component {
           <DaysSelector
             days={days}
             isExpanded={isExpanded}
+            isVibrate={vibrate}
+            isRepeat={repeat}
             onDelete={() => dispatch(deleteAlarm(alarm.id))}
+            onRepeatChange={value => dispatch(modifyAlarmRepeat(alarm, value))}
+            onVibrateChange={value =>
+              dispatch(modifyAlarmVibrate(alarm, value))}
           />
         </View>
       </TouchableOpacity>

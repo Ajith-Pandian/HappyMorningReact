@@ -8,7 +8,7 @@ const UNCHECKED = (
 const CHECKED = <Icon name="check-box" size={30} color="#49b1b2" />;
 
 export default class CheckBox extends Component {
-  state = { isChecked: false };
+  state = { isChecked: this.props.value };
   render() {
     let { isChecked } = this.state;
     let { name, onValueChange } = this.props;

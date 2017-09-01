@@ -25,3 +25,7 @@ export function getTimeString(date) {
   let time = [hours, minutes].join(":") + (isPM ? " PM" : " AM");
   return time;
 }
+
+export function contains(haystack, needle) {
+  return !!~haystack.indexOf(needle);
+}

@@ -9,7 +9,14 @@ export default class DaysSelector extends Component {
     this.state = { selectedDays: props.days };
   }
   render() {
-    let { isExpanded, onDelete } = this.props;
+    let {
+      isExpanded,
+      onDelete,
+      onRepeatChange,
+      onVibrateChange,
+      isVibrate,
+      isRepeat
+    } = this.props;
     let { selectedDays } = this.state;
     let daysList = selectedDays.map((day, index) => {
       return (
@@ -47,7 +54,15 @@ export default class DaysSelector extends Component {
           : <View style={{ flexDirection: "row" }}>
               {daysList}
             </View>}
-        {isExpanded ? <Actions onDelete={() => onDelete()} /> : false}
+        {isExpanded
+          ? <Actions
+              onDelete={() => onDelete()}
+              isVibrate={isVibrate}
+              isRepeat={isRepeat}
+              onRepeatChange={value => onRepeatChange(value)}
+              onVibrateChange={value => onVibrateChange(value)}
+            />
+          : false}
       </View>
     );
   }
