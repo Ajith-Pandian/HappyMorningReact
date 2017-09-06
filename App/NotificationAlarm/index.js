@@ -10,20 +10,23 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import PushNotification from "react-native-push-notification";
 import { connect } from "react-redux";
-import { addAlarm } from "../Actions/AlarmActions";
+import { addAlarm, modifyAlarmTime } from "../Actions/AlarmActions";
+import {
+  showTimePicker,
+  hideTimePicker,
+  onTimePicked
+} from "../Actions/TimePickerActions";
 import { getTimeString } from "../Utils";
 import { ListItem } from "./Components";
-import AlarmModel from "../AlarmModel";
+import AlarmModel from "../Models/AlarmModel";
 import AlarmDatabase from "../AlarmDatabase";
 
 class App extends Component {
   state = {
-    data: [],
-    isDateTimePickerVisible: false
+    data: []
   };
   constructor(props) {
     super(props);
-    console.log(props);
     PushNotification.configure({
       onRegister: function(token) {
         console.log("TOKEN:", token);
@@ -39,14 +42,6 @@ class App extends Component {
       requestPermissions: true
     });
   }
-  _showDateTimePicker = () => this.setState({ isDateTimePickerVisible: true });
-
-  _hideDateTimePicker = () => this.setState({ isDateTimePickerVisible: false });
-
-  _handleDatePicked = selectedDate => {
-    this.addAlarmItem(selectedDate);
-    this._hideDateTimePicker();
-  };
   addAlarmItem = date => {
     // PushNotification.localNotificationSchedule({
     //   //title: "My Notification Title",
@@ -57,14 +52,24 @@ class App extends Component {
     //   //alertAction: "Cancel",
     //   number: 0
     // });
-    console.log(date);
+    console.log("Alarm with date" + date);
     this.props.createAlarm(date);
     //AlarmDatabase.save(alarm);
     //  console.log(AlarmDatabase.findAll(true));
   };
 
   render() {
-    let { alarms } = this.props;
+    let {
+      alarms,
+      time,
+      modifyAlarm,
+      isModification,
+      timePickerVisible,
+      showTimePicker,
+      hideTimePicker,
+      _modifyAlarmTime,
+      onTimePicked
+    } = this.props;
     let { container, iconCircle, iconButton } = styles;
     return (
       <View style={container}>
@@ -79,7 +84,7 @@ class App extends Component {
         <TouchableOpacity
           style={iconButton}
           activeOpacity={0.5}
-          onPress={() => this._showDateTimePicker()}
+          onPress={() => showTimePicker()}
         >
           <View style={iconCircle}>
             <Icon
@@ -91,11 +96,15 @@ class App extends Component {
           </View>
         </TouchableOpacity>
         <DateTimePicker
-          isVisible={this.state.isDateTimePickerVisible}
-          onConfirm={this._handleDatePicked}
-          onCancel={this._hideDateTimePicker}
+          isVisible={timePickerVisible}
+          onConfirm={selectedDate => {
+            onTimePicked(selectedDate);
+            if (isModification) _modifyAlarmTime(modifyAlarm, selectedDate);
+            else this.addAlarmItem(selectedDate);
+          }}
+          onCancel={() => hideTimePicker()}
           mode={"time"}
-          date={new Date()}
+          date={isModification ? time : new Date()}
           titleIOS={"Pick Time"}
         />
       </View>
@@ -137,13 +146,39 @@ App.navigationOptions = {
   }
 };
 
-const mapStateToProps = state => ({
-  alarms: state.AlarmsReducer.alarms
-});
+const mapStateToProps = state => {
+  let { AlarmsReducer, TimePickerReducer } = state;
+  let { alarms } = AlarmsReducer;
+  let {
+    timePickerVisible,
+    time,
+    isModification,
+    modifyAlarm
+  } = TimePickerReducer;
+  return {
+    alarms,
+    timePickerVisible,
+    time,
+    isModification,
+    modifyAlarm
+  };
+};
 
 const mapDispatchToProps = (dispatch, props) => ({
   createAlarm: date => {
     dispatch(addAlarm(date));
+  },
+  showTimePicker: () => {
+    dispatch(showTimePicker());
+  },
+  onTimePicked: time => {
+    dispatch(onTimePicked(time));
+  },
+  hideTimePicker: () => {
+    dispatch(hideTimePicker());
+  },
+  _modifyAlarmTime: (modifyAlarm, newDate) => {
+    dispatch(modifyAlarmTime(modifyAlarm, newDate));
   }
 });
 

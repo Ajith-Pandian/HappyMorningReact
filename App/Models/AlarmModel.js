@@ -1,4 +1,4 @@
-import { getRandomId } from "./Utils";
+import { getRandomId } from "../Utils";
 
 const ALL_DAYS = [
   { id: 1, name: "S", selected: false },

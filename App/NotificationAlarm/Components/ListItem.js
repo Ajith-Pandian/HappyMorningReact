@@ -9,6 +9,7 @@ import {
   modifyAlarmVibrate,
   modifyAlarmDays
 } from "../../Actions/AlarmActions";
+import { showTimePickerWithTime } from "../../Actions/TimePickerActions";
 import { connect } from "react-redux";
 
 class ListItem extends Component {
@@ -19,8 +20,18 @@ class ListItem extends Component {
     };
   }
   render() {
-    let { alarm, index, dispatch } = this.props;
-    let { time, days, vibrate, repeat, isActive } = alarm;
+    let {
+      alarm,
+      index,
+      modifyAlarm,
+      modifyAlarmDays,
+      deleteAlarm,
+      modifyAlarmRepeat,
+      modifyAlarmVibrate,
+      modifyAlarmActive,
+      showTimePickerWithTime
+    } = this.props;
+    let { alarmTime, time, days, vibrate, repeat, isActive } = alarm;
     let { isExpanded } = this.state;
     let isEvenItem = index % 2 === 0;
     return (
@@ -43,13 +54,17 @@ class ListItem extends Component {
             alignItems: "center"
           }}
         >
-          <Text style={{ color: "black", fontSize: 30 }}>
-            {time}
-          </Text>
+          <TouchableOpacity
+            onPress={() => showTimePickerWithTime(alarm, alarmTime)}
+          >
+            <Text style={{ color: "black", fontSize: 30 }}>
+              {time}
+            </Text>
+          </TouchableOpacity>
           <Switch
             onValueChange={value =>
               this.setState({ switchValue: value }, () =>
-                dispatch(modifyAlarmActive(alarm, value))
+                modifyAlarmActive(alarm, value)
               )}
             onTintColor="#49b1b2"
             value={isActive}
@@ -63,16 +78,41 @@ class ListItem extends Component {
             isVibrate={vibrate}
             isRepeat={repeat}
             onDaysChange={(daysIndex, value) =>
-              dispatch(modifyAlarmDays(alarm, daysIndex, value))}
-            onDelete={() => dispatch(deleteAlarm(alarm.id))}
-            onRepeatChange={value => dispatch(modifyAlarmRepeat(alarm, value))}
-            onVibrateChange={value =>
-              dispatch(modifyAlarmVibrate(alarm, value))}
+              modifyAlarmDays(alarm, daysIndex, value)}
+            onDelete={() => deleteAlarm(alarm.id)}
+            onRepeatChange={value => modifyAlarmRepeat(alarm, value)}
+            onVibrateChange={value => modifyAlarmVibrate(alarm, value)}
           />
         </View>
       </TouchableOpacity>
     );
   }
 }
+const mapStateToProps = ({ TimePickerReducer }) => {
+  let { modifyAlarm } = TimePickerReducer;
+  return {
+    modifyAlarm
+  };
+};
 
-export default connect()(ListItem);
+const mapDispatchToProps = (dispatch, props) => ({
+  modifyAlarmDays: (alarm, daysIndex, value) => {
+    dispatch(modifyAlarmDays(alarm, daysIndex, value));
+  },
+  deleteAlarm: id => {
+    dispatch(deleteAlarm(id));
+  },
+  modifyAlarmRepeat: (alarm, value) => {
+    dispatch(modifyAlarmRepeat(alarm, value));
+  },
+  modifyAlarmVibrate: (alarm, value) => {
+    dispatch(modifyAlarmVibrate(alarm, value));
+  },
+  modifyAlarmActive: (alarm, value) => {
+    dispatch(modifyAlarmActive(alarm, value));
+  },
+  showTimePickerWithTime: (modifyAlarm, newDate) => {
+    dispatch(showTimePickerWithTime(modifyAlarm, newDate));
+  }
+});
+export default connect(mapStateToProps, mapDispatchToProps)(ListItem);
