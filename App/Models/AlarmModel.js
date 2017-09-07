@@ -1,4 +1,4 @@
-import { getRandomId } from "../Utils";
+import { getRandomId, getNotificationId } from "../Utils";
 
 const ALL_DAYS = [
   { id: 1, name: "S", selected: false },
@@ -12,7 +12,7 @@ const ALL_DAYS = [
 
 export default class AlarmModel {
   constructor(title, alarmTime, visibleTime, days, repeat, vibrate, isActive) {
-    this.id = getRandomId();
+    this.id = getNotificationId(alarmTime);
     this.title = title;
     this.alarmTime = alarmTime;
     this.time = visibleTime;

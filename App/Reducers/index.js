@@ -1,8 +1,13 @@
 import { combineReducers } from "redux";
 
-import AlarmsReducer from "./AlarmReducer";
+import AlarmReducer from "./AlarmReducer";
 import TimePickerReducer from "./TimePickerReducer";
+import NotificationReducer from "./NotificationReducer";
 
-const rootReducer = combineReducers({ AlarmsReducer, TimePickerReducer });
+const rootReducer = combineReducers({
+  AlarmReducer,
+  TimePickerReducer,
+  NotificationReducer
+});
 
 export default rootReducer;

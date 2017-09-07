@@ -1,96 +1,93 @@
 import {
+  CONFIGURE_NOTIFICATION,
   CREATE_NOTIFICATION,
   MODIFY_NOTIFICATION,
   DELETE_NOTIFICATION
 } from "../Constants";
-import AlarmModel from "../Models/AlarmModel";
+import NotificationModel from "../Models/NotificationModel";
 import { getTimeString } from "../Utils";
+import PushNotification from "react-native-push-notification";
 
-export function addAlarm(date) {
-  return (dispatch, getState) => {
-    let time = getTimeString(date);
-    let alarm = new AlarmModel("Alarm", date, time);
-    dispatch(_createAlarm(alarm));
-  };
-}
-
-export function modifyAlarmActive(alarm, value) {
-  return (dispatch, getState) => {
-    dispatch(_modifyAlarmActive(alarm, value));
-  };
-}
-
-export function modifyAlarmRepeat(alarm, value) {
-  return (dispatch, getState) => {
-    dispatch(_modifyAlarmRepeat(alarm, value));
-  };
-}
-
-export function modifyAlarmVibrate(alarm, value) {
-  return (dispatch, getState) => {
-    dispatch(_modifyAlarmVibrate(alarm, value));
-  };
-}
-
-export function modifyAlarmDays(alarm, dayIndex, value) {
-  return (dispatch, getState) => {
-    dispatch(_modifyAlarmDays(alarm, dayIndex, value));
-  };
-}
-
-export function deleteAlarm(id) {
+export const configureNotification = () => {
+  setupNotification();
   return dispatch => {
-    dispatch(_deleteAlarm(id));
+    dispatch(_configureNotification());
+  };
+};
+
+setupNotification = () => {
+  PushNotification.configure({
+    onRegister: function(token) {
+      console.log("TOKEN:", token);
+    },
+    onNotification: function(notification) {
+      console.log("NOTIFICATION:", notification);
+    },
+    permissions: {
+      alert: true,
+      badge: true,
+      sound: true
+    },
+    requestPermissions: true
+  });
+};
+cancelNotification = id => {
+  PushNotification.cancelLocalNotifications({ id });
+};
+scheduleNotification = notification => {
+  PushNotification.localNotificationSchedule(notification);
+};
+export function createNotification(id, date) {
+  let time = getTimeString(date);
+  let notification = new NotificationModel(
+    id.toString(),
+    "HappyMorning",
+    "Alarm @ " + time,
+    date
+  );
+  scheduleNotification(notification);
+  return dispatch => {
+    dispatch(_createNotification(notification));
   };
 }
 
-function getAlarm(alarms, id) {
-  return alarms.filter(alarm => alarm.id === id);
-}
-
-export function _createAlarm(alarm) {
-  return {
-    type: CREATE_ALARM,
-    alarm
+export function modifyNotification(notification, value) {
+  cancelNotification(notification.id);
+  scheduleNotification(notification);
+  return dispatch => {
+    dispatch(_modifyNotification(notification));
   };
 }
 
-export function _modifyAlarmActive(alarm, value) {
+export function deleteNotification(id) {
+  return dispatch => {
+    cancelNotification(id);
+    dispatch(_deleteNotification(id));
+  };
+}
+_configureNotification = () => {
   return {
-    type: MODIFY_ALARM_ACTIVE,
-    alarm,
+    type: CONFIGURE_NOTIFICATION
+  };
+};
+_createNotification = notification => {
+  return {
+    type: CREATE_NOTIFICATION,
+    notification
+  };
+};
+
+_modifyNotification = (notification, value) => {
+  return {
+    type: MODIFY_NOTIFICATION,
+    notification,
     value
   };
-}
+};
 
-export function _modifyAlarmVibrate(alarm, value) {
+_deleteNotification = id => {
   return {
-    type: MODIFY_ALARM_VIBRATE,
-    alarm,
-    value
-  };
-}
-
-export function _modifyAlarmRepeat(alarm, value) {
-  return {
-    type: MODIFY_ALARM_REPEAT,
-    alarm,
-    value
-  };
-}
-
-export function _modifyAlarmDays(alarm, dayIndex, value) {
-  return {
-    type: MODIFY_ALARM_DAYS,
-    alarm,
-    dayIndex,
-    value
-  };
-}
-
-export function _deleteAlarm(id) {
-  return {
-    type: DELETE_ALARM,
+    type: DELETE_NOTIFICATION,
     id
   };
-}
+};

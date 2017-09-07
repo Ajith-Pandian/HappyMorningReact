@@ -9,11 +9,13 @@ import {
 } from "../Constants";
 import AlarmModel from "../Models/AlarmModel";
 import { getTimeString } from "../Utils";
+import { createNotification, deleteNotification } from "./NotificationActions";
 
 export function addAlarm(date) {
   return dispatch => {
     let time = getTimeString(date);
     let alarm = new AlarmModel("Alarm", date, time);
+    dispatch(createNotification(alarm.id, date));
     dispatch(_createAlarm(alarm));
   };
 }
@@ -51,6 +53,7 @@ export function modifyAlarmDays(alarm, dayIndex, value) {
 
 export function deleteAlarm(id) {
   return dispatch => {
+    dispatch(deleteNotification(id.toString()));
     dispatch(_deleteAlarm(id));
   };
 }

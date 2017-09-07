@@ -11,6 +11,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import PushNotification from "react-native-push-notification";
 import { connect } from "react-redux";
 import { addAlarm, modifyAlarmTime } from "../Actions/AlarmActions";
+import { configureNotification } from "../Actions/NotificationActions";
 import {
   showTimePicker,
   hideTimePicker,
@@ -27,20 +28,7 @@ class App extends Component {
   };
   constructor(props) {
     super(props);
-    PushNotification.configure({
-      onRegister: function(token) {
-        console.log("TOKEN:", token);
-      },
-      onNotification: function(notification) {
-        console.log("NOTIFICATION:", notification);
-      },
-      permissions: {
-        alert: true,
-        badge: true,
-        sound: true
-      },
-      requestPermissions: true
-    });
+    props._configureNotification();
   }
   addAlarmItem = date => {
     // PushNotification.localNotificationSchedule({
@@ -53,7 +41,7 @@ class App extends Component {
     //   number: 0
     // });
     console.log("Alarm with date" + date);
-    this.props.createAlarm(date);
+    this.props._createAlarm(date);
     //AlarmDatabase.save(alarm);
     //  console.log(AlarmDatabase.findAll(true));
   };
@@ -65,10 +53,10 @@ class App extends Component {
       modifyAlarm,
       isModification,
       timePickerVisible,
-      showTimePicker,
-      hideTimePicker,
+      _showTimePicker,
+      _hideTimePicker,
       _modifyAlarmTime,
-      onTimePicked
+      _onTimePicked
     } = this.props;
     let { container, iconCircle, iconButton } = styles;
     return (
@@ -84,7 +72,7 @@ class App extends Component {
         <TouchableOpacity
           style={iconButton}
           activeOpacity={0.5}
-          onPress={() => showTimePicker()}
+          onPress={() => _showTimePicker()}
         >
           <View style={iconCircle}>
             <Icon
@@ -98,11 +86,11 @@ class App extends Component {
         <DateTimePicker
           isVisible={timePickerVisible}
           onConfirm={selectedDate => {
-            onTimePicked(selectedDate);
+            _onTimePicked(selectedDate);
             if (isModification) _modifyAlarmTime(modifyAlarm, selectedDate);
             else this.addAlarmItem(selectedDate);
           }}
-          onCancel={() => hideTimePicker()}
+          onCancel={() => _hideTimePicker()}
           mode={"time"}
           date={isModification ? time : new Date()}
           titleIOS={"Pick Time"}
@@ -147,8 +135,8 @@ App.navigationOptions = {
 };
 
 const mapStateToProps = state => {
-  let { AlarmsReducer, TimePickerReducer } = state;
-  let { alarms } = AlarmsReducer;
+  let { AlarmReducer, TimePickerReducer } = state;
+  let { alarms } = AlarmReducer;
   let {
     timePickerVisible,
     time,
@@ -165,16 +153,19 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = (dispatch, props) => ({
-  createAlarm: date => {
+  _configureNotification: () => {
+    dispatch(configureNotification());
+  },
+  _createAlarm: date => {
     dispatch(addAlarm(date));
   },
-  showTimePicker: () => {
+  _showTimePicker: () => {
     dispatch(showTimePicker());
   },
-  onTimePicked: time => {
+  _onTimePicked: time => {
     dispatch(onTimePicked(time));
   },
-  hideTimePicker: () => {
+  _hideTimePicker: () => {
     dispatch(hideTimePicker());
   },
   _modifyAlarmTime: (modifyAlarm, newDate) => {

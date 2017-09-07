@@ -1,3 +1,4 @@
+import { NOTIFICATION_ID } from "./Constants";
 export function sortByKey(unordered) {
   const ordered = {};
   Object.keys(unordered).sort().forEach(key => (ordered[key] = unordered[key]));
@@ -28,4 +29,10 @@ export function getTimeString(date) {
 
 export function contains(haystack, needle) {
   return !!~haystack.indexOf(needle);
+}
+export function getNotificationId() {
+  let dateString = new Date().getTime().toString();
+  let length = dateString.length;
+  let id = parseInt(dateString.substr(length - 6));
+  return id;
 }

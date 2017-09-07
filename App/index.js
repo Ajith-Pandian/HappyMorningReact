@@ -1,3 +1,4 @@
+import './ReactotronConfig'
 import React from "react";
 import DefaultShare from "./DefaultShare";
 import SimpleShare from "./SimpleShare";
