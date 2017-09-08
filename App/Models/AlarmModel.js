@@ -19,7 +19,7 @@ export default class AlarmModel {
     this.days = days || ALL_DAYS;
     this.repeat = repeat || false;
     this.vibrate = vibrate || false;
-    this.isActive = isActive || false;
+    this.isActive = isActive || true;
     this.createdAt = new Date();
     this.updatedAt = new Date();
   }

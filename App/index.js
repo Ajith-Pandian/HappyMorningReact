@@ -1,4 +1,4 @@
-import './ReactotronConfig'
+import "./ReactotronConfig";
 import React from "react";
 import DefaultShare from "./DefaultShare";
 import SimpleShare from "./SimpleShare";
@@ -7,7 +7,7 @@ import NotificationAlarm from "./NotificationAlarm";
 import { StackNavigator } from "react-navigation";
 import { View, StatusBar } from "react-native";
 import { Provider } from "react-redux";
-import configureStore from "./store";
+import store from "./store";
 
 const AppContent = StackNavigator({
   Home: { screen: NotificationAlarm }
@@ -18,7 +18,7 @@ const App = () =>
     <AppContent />
   </View>;
 const ReduxApp = () =>
-  <Provider store={configureStore()}>
+  <Provider store={store}>
     <App />
   </Provider>;
 export default ReduxApp;

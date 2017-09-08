@@ -92,7 +92,7 @@ class App extends Component {
           }}
           onCancel={() => _hideTimePicker()}
           mode={"time"}
-          date={isModification ? time : new Date()}
+          date={isModification ? new Date(time) : new Date()}
           titleIOS={"Pick Time"}
         />
       </View>

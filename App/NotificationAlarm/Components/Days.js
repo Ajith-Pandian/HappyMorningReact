@@ -7,13 +7,12 @@ export default class Days extends Component {
     this.state = { isSelected: props.isSelected };
   }
   getBackgroundStyle = isSelected => {
-    return isSelected
-      ? {
-          borderRadius: 100,
-          backgroundColor: "#7049b3",
-          color: "white"
-        }
-      : {};
+    let containerStyle = {
+      borderRadius: 100,
+      backgroundColor: "#7049b3",
+      overflow: "hidden"
+    };
+    return isSelected ? containerStyle : {};
   };
   render() {
     let { value, onValueChange } = this.props;
@@ -29,21 +28,23 @@ export default class Days extends Component {
           )}
         style={[
           {
+            height: 30,
+            width: 30,
             marginLeft: 4,
-            marginRight: 4
-          }
+            marginRight: 4,
+            alignItems: "center",
+            justifyContent: "center"
+          },
+          this.getBackgroundStyle(isSelected)
         ]}
       >
         <Text
           style={[
             {
-              flex: 1,
               textAlignVertical: "center",
               textAlign: "center",
-              height: 30,
-              width: 30
-            },
-            this.getBackgroundStyle(isSelected)
+              color: isSelected ? "white" : "black"
+            }
           ]}
         >
           {value}

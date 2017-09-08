@@ -4,5 +4,6 @@ export default class NotificationModel {
     this.title = title;
     this.message = message;
     this.date = date || new Date();
+    this.number = 0;
   }
 }
