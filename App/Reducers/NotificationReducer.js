@@ -5,13 +5,15 @@ import {
   DELETE_NOTIFICATION
 } from "../Constants";
 let initialState = {
-  notifications: []
+  notifications: [],
+  isConfigured: false
 };
 export default function NotificationReducer(state = initialState, action) {
   switch (action.type) {
     case CONFIGURE_NOTIFICATION:
       return {
-        ...state
+        ...state,
+        isConfigured: true
       };
     case CREATE_NOTIFICATION:
       return {

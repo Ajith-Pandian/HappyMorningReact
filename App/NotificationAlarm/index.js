@@ -28,7 +28,13 @@ class App extends Component {
   };
   constructor(props) {
     super(props);
-    props._configureNotification();
+  }
+  componentDidMount() {
+    let { rehydrated, isConfigured, _configureNotification } = this.props;
+    if (rehydrated && !isConfigured) {
+      console.log(isConfigured);
+      _configureNotification();
+    }
   }
   addAlarmItem = date => {
     // PushNotification.localNotificationSchedule({
@@ -126,16 +132,25 @@ const styles = StyleSheet.create({
     bottom: 0
   }
 });
-App.navigationOptions = {
-  title: "HappyMorning",
-  headerTintColor: "white",
-  headerStyle: {
-    backgroundColor: "#175e65"
-  }
+
+App.navigationOptions = props => {
+  const navigate = props.navigation.navigate;
+  return {
+    title: "HappyMorning",
+    headerTintColor: "white",
+    headerStyle: {
+      backgroundColor: "#175e65"
+    }
+  };
 };
 
 const mapStateToProps = state => {
-  let { AlarmReducer, TimePickerReducer } = state;
+  let {
+    AlarmReducer,
+    TimePickerReducer,
+    NotificationReducer,
+    PersistReducer
+  } = state;
   let { alarms } = AlarmReducer;
   let {
     timePickerVisible,
@@ -143,12 +158,16 @@ const mapStateToProps = state => {
     isModification,
     modifyAlarm
   } = TimePickerReducer;
+  let { isConfigured } = NotificationReducer;
+  let { rehydrated } = PersistReducer;
   return {
     alarms,
+    rehydrated,
     timePickerVisible,
     time,
     isModification,
-    modifyAlarm
+    modifyAlarm,
+    isConfigured
   };
 };
 

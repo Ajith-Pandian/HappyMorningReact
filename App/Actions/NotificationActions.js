@@ -7,13 +7,14 @@ import {
 import NotificationModel from "../Models/NotificationModel";
 import { getTimeString } from "../Utils";
 import PushNotification from "react-native-push-notification";
-
+import { NavigationActions } from "react-navigation";
 export const configureNotification = () => {
   setupNotification();
   return dispatch => {
     dispatch(_configureNotification());
   };
 };
+import NavigatorService from "../NavigatorService";
 
 setupNotification = () => {
   PushNotification.configure({
@@ -22,6 +23,8 @@ setupNotification = () => {
     },
     onNotification: function(notification) {
       console.log("NOTIFICATION:", notification);
+      NavigatorService.navigate("HappyScreen");
+      //NavigationActions.navigate({ routeName: "HappyScreen" });
     },
     permissions: {
       alert: true,
